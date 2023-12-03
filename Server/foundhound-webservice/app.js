@@ -3,11 +3,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors')
-const database = require("./config/database.config");
 const apiRouter = require("./routes/index.router");
 
 const app = express();
-database.connect();
 
 app.use(logger('dev'));
 app.use(cors());

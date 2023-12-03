@@ -4,6 +4,10 @@ require('dotenv').config();
  * Module dependencies.
  */
 
+const database = require("./config/database.config");
+
+database.connect();
+
 let app = require('../app');
 let debug = require('debug')('app:server');
 let http = require('http');
