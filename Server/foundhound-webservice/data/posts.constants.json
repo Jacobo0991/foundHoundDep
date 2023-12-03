@@ -1,0 +1,11 @@
+{ 
+    "CATEGORY": {
+        "FOUND": "found",
+        "LOST": "lost"
+    },
+    "STATUS": {
+        "ACTIVE": "active",
+        "HIDDEN": "hidden",
+        "RESOLVED": "resolved"
+    }
+}

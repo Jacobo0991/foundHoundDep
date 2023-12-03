@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  1. Use a more-intuitive box-sizing model.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/*
+    2. Remove default margin
+  */
+* {
+  margin: 0;
+}
+/*
+    Typographic tweaks!
+    3. Add accessible line-height
+    4. Improve text rendering
+  */
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+/*
+    6. Remove built-in form typography styles
+  */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+
+
+/*
+    8. Create a root stacking context
+  */
+#root,
+#__next {
+  isolation: isolate;
+}
+
+
+.main-btn {
+  /* Botones para inicio de sesión y relacionados */
+  @apply bg-titles py-1 px-3 rounded-2xl text-white-bg border-solid border border-titles-border hover:bg-titles/60 hover:border-titles/60;
+}
+
+.paragraph-text{
+  @apply text-sm text-justify tracking-wider text-text lg:text-lg xl:text-xl;
+}
+
+.paragraph-text-leading{
+  @apply text-sm lg:text-lg/8 xl:text-xl/10 text-justify tracking-wider text-text;
+}
+.paragraph-text-leading2{
+  @apply text-xl lg:text-lg/5 xl:text-xl/8 text-justify tracking-wider text-text pb-3.5;
+}
+
+.header-text{
+  @apply text-xl w-full font-medium text-titles text-center lg:text-2xl xl:text-3xl;
+}
+.header-text2{
+  @apply text-xl w-full font-bold text-titles text-center lg:text-2xl xl:text-3xl pb-5;
+}
+.header-text3{
+  @apply text-sm w-full font-bold text-titles2 text-justify pb-4;
+}
+
+.hide-scroll-bar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scroll-bar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .home-container{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+  }
+  .home-container-reu{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+  }
+}
+@media (max-width: 768px) {
+  .home-container{
+    display: flex;
+    flex-direction: column;
+    
+  }
+  .home-container img{
+    max-height: 16rem;
+    
+  }
+  .home-container-reu{
+    display: flex;
+    flex-direction: column;
+    
+  }
+  .home-container-reu img{
+    max-height: 16rem;
+    
+  }
+}
+
+.leaflet-container{
+  width: 40vw;
+  height: 40vh;
+  z-index: 1;
+
+}
