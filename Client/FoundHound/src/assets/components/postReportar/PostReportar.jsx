@@ -22,7 +22,9 @@ const PostReportar = ({ perdido = true, edit = false }) => {
     const [date, setDate] = useState("");
     const [sex, setSex] = useState("");
     const { id, category } = useParams();
+    if (id) {
     perdido = category == "lost" ? true : false;
+    }
     const [post, setPost] = useState();
 
     const initialFormData = {
