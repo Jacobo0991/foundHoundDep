@@ -9,7 +9,8 @@ export default {
       gridTemplateColumns: {
         '2f1f': '2fr 1fr',
         '1f5f': '1fr 3fr',
-        '3f1f': '3fr 1fr'
+        '3f1f': '3fr 1fr',
+        '4f1f': '4fr 1fr',
       },
       colors: {
         'text': '#363636',

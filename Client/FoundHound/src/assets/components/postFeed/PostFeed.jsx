@@ -24,7 +24,6 @@ const PostFeed = ({ perdido }) => {
     const [postList, setPostList] = useState([]);
     const [count, setCount] = useState(0);
     const [offset, setOffset] = useState(0);
-    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     useEffect( ( ) => {
@@ -44,12 +43,26 @@ const PostFeed = ({ perdido }) => {
     },[perdido, offset]);
 
     const isInFilter = (post) => {
-        if ((post.description.includes(search) || post.name?.includes(search))
-            || (animalFilter.length != 0 && animalFilter.contains(post.animal))
-            || (sexFilter.length != 0 && sexFilter.contains(post.sex))
-            || (colorFilter.length != 0 && colorFilter.some( ai => post.color.includes(ai) ))
-            || (breedFilter.length != 0 && breedFilter.some( ai => post.breed.includes(ai) ))
-        ) {
+
+        if (search == "" && ((sexFilter.length != 0 && sexFilter.contains(post.sex))
+        || (colorFilter.length != 0 && post.color.some( ai => colorFilter.includes(ai) ))
+        || (breedFilter.length != 0 && post.breed.some( ai => breedFilter.includes(ai) )))) {
+            return post
+        }
+
+        if (search == "" && colorFilter.length == 0 && breedFilter.length == 0 ) {
+            return post
+        }
+
+        if (search != "" && (post.description.includes(search) || post.name?.includes(search)) && animalFilter.length == 0 && sexFilter == 0
+        && colorFilter.length == 0 && breedFilter.length == 0 ) {
+            return post
+        }
+
+        if (search != "" && (post.description.includes(search) || post.name?.includes(search)) && ((animalFilter.length != 0 && animalFilter.contains(post.animal))
+        || (sexFilter.length != 0 && sexFilter.contains(post.sex))
+        || (colorFilter.length != 0 && post.color.some( ai => colorFilter.includes(ai) ))
+        || (breedFilter.length != 0 && post.breed.some( ai => breedFilter.includes(ai) )))) {
             return post
         }
         return false;
@@ -57,6 +70,7 @@ const PostFeed = ({ perdido }) => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        handleClose();
         
         const filteredPosts = postList.filter(e => isInFilter(e));
 
@@ -144,7 +158,7 @@ const PostFeed = ({ perdido }) => {
                             <div className="flex justify-end md:justify-start"><button className="main-btn" type="submit">Buscar</button></div>
                         </form>
                         <div className="flex justify-center">
-                        <h2 onClick={handleOpen} className="w-max self-center flex justify-center gap-2 hover:cursor-pointer items-center text-md text-[#DBA39A] font-bold lg:text-lg xl:text-xl  px-2"> <CgMenu className="text-md text-[#DBA39A] font-bold lg:text-lg xl:text-xl"></CgMenu> Búsqueda filtrada</h2>
+                        <h2 onClick={() => setOpen(true)} className="w-max self-center flex justify-center gap-2 hover:cursor-pointer items-center text-md text-[#DBA39A] font-bold lg:text-lg xl:text-xl  px-2"> <CgMenu className="text-md text-[#DBA39A] font-bold lg:text-lg xl:text-xl"></CgMenu> Búsqueda filtrada</h2>
                         </div>
                     </div>
                 </div>
@@ -165,7 +179,9 @@ const PostFeed = ({ perdido }) => {
                     <Pagination count={count} shape="rounded" onChange={onChangePage}></Pagination>
                 </div>
 
-                <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                
+            </>}
+            <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                     <div className="outline-none absolute top-1/2 left-1/2 w-3/4 rounded-xl translate-x-[-50%] translate-y-[-50%] bg-white-bg">
                         <h1 className="text-xl w-full font-bold text-[#C76363] p-6 text-center lg:text-2xl xl:text-3xl">Búsqueda filtrada</h1>
                         <div  className="grid lg:grid-cols-4 grid-cols-1 sm:grid-cols-2 p-4 gap-3  pb-8">
@@ -236,7 +252,6 @@ const PostFeed = ({ perdido }) => {
                         </div>
                     </div>
                 </Modal>
-            </>}
         </section>
     );
 }

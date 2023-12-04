@@ -17,14 +17,14 @@ router.get("/user/:id", validateId, runValidation, postController.findByUser);
 router.get("/my-posts/", authentication, authorization(ROLES.USER), postController.findOwn);
 
 //Enviar información sobre el anuncio
-router.post("/provide-info/:id", authentication, authorization(ROLES.USER), validateId, validateInfo, runValidation, postController.provideInfo);
+router.post("/provide-info/:id", upload.single(""), authentication, authorization(ROLES.USER), validateId, validateInfo, runValidation, postController.provideInfo);
 
 //Crear post
 router.post(["/create/:category", "/update/:id"], upload.single("image"), authentication, authorization(ROLES.USER), validateCategory, savePostValidator, runValidation, postController.savePost);
 
 //Modificacion de post
-router.patch("/status/:id", authentication, authorization(ROLES.USER), validateId, validateStatus, runValidation, postController.changeStatus);
-router.patch("/report/:id", authentication, authorization(ROLES.USER), validateId, reportValidator, runValidation, postController.reportPost);
+router.patch("/status/:id", upload.single(""), authentication, authorization(ROLES.USER), validateId, validateStatus, runValidation, postController.changeStatus);
+router.patch("/report/:id", upload.single(""), authentication, authorization(ROLES.USER), validateId, reportValidator, runValidation, postController.reportPost);
 
 
 module.exports = router;

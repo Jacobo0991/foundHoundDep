@@ -11,7 +11,7 @@ const Resenia = ({ resenia = {}, handleOPen, profile }) => {
                 }
             </div>
             <div className="flex flex-col gap-2">
-                <h1 className="font-bold text-text">{resenia.nombre}</h1>
+                <h1 className="font-bold text-text">{resenia.name}</h1>
                 <p className="text-text">{resenia.desc}</p>
             </div>
         </div>

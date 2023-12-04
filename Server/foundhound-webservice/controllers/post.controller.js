@@ -188,7 +188,6 @@ controller.reportPost = async (req, res, next) => {
             //El comentario ya existe
             const _report = _reports[prevIndex];
             _report.content = content;
-
             _reports[prevIndex] = _report;
         } else {
             //El comentario no existe
@@ -197,7 +196,7 @@ controller.reportPost = async (req, res, next) => {
         }
         //Guardamos el post - commit
         post["reports"] = _reports;
-        const newPost = await (await post.save()).populate("reports.user", "email").populate("helpers", "name email");
+        const newPost = (await post.save());
 
         //Retornamos el post actualizado
         return res.status(200).json({ newPost });

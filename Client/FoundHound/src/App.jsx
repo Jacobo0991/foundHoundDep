@@ -10,6 +10,7 @@ import PostReportar from "./assets/components/postReportar/PostReportar";
 import CreacionPerfil from './assets/components/creacionPerfil/CreacionPerfil'
 import EditarPerfil from "./assets/components/editarPerfil/EditarPerfil";
 import PublicacionesPropias from "./assets/components/publicacionesPropias/PublicacionesPropias";
+import VistaIndividualPost from "./assets/components/vistaIndividualPost/VistaIndividualPost";
 
 function App() {
   return (
@@ -25,9 +26,12 @@ function App() {
             <Route path="/inicio-sesion" element={<InicioSesion></InicioSesion>}></Route>
             <Route path="/reportar-perdida" element={<PostReportar perdido={true}></PostReportar>}></Route>
             <Route path="/reportar-encontrada" element={<PostReportar perdido={false}></PostReportar>}></Route>
+            <Route path="/editar/:category/:id" element={<PostReportar edit={true}></PostReportar>}></Route>
+            <Route path="/editar/:category/:id" element={<PostReportar edit={true}></PostReportar>}></Route>
             <Route path='/editar-perfil' element={<EditarPerfil></EditarPerfil>}></Route>
             <Route path='/registrarme' element={<CreacionPerfil></CreacionPerfil>}></Route>
             <Route path="/mis-publicaciones" element={<PublicacionesPropias></PublicacionesPropias>}></Route>
+            <Route path="/post/:id" element={<VistaIndividualPost></VistaIndividualPost>}></Route>
           </Routes>
         </div>
       </BrowserRouter>

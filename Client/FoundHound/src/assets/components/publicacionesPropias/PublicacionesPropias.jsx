@@ -7,35 +7,46 @@ import ListSubheader from "@mui/material/ListSubheader";
 import Select from "@mui/material/Select";
 import razas from "../../resources/razas.json";
 import MenuItem from "@mui/material/MenuItem";
-import { getOwnPosts } from "../../../services/foundhound.service";
+import { changeStatus, getOwnPosts, reviewUsers } from "../../../services/foundhound.service";
 import { Pagination } from "@mui/material";
 import { Rating } from "@mui/material";
 import { AiOutlineCheck } from "react-icons/ai";
 
 import NotFound from "../notFound/NotFound";
+import swal from "sweetalert";
+import Resenia from "../resenia/Resenia";
 
 const PublicacionesPropias = ({ }) => {
   const [open, setOpen] = useState(false);
   const [openDel, setOpenDel] = useState(false);
   const [openDel2, setOpenDel2] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
   const [animalFilter, setAnimal] = useState([]);
+  const [postId, setPostId] = useState("");
   const [sexFilter, setSex] = useState([]);
+  const [desc, setDesc] = useState("");
+  const [user, setUser] = useState("");
   const [colorFilter, setColor] = useState([]);
   const [breedFilter, setBreed] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [helpers, setHelpers] = useState([]);
   const [postList, setPostList] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [count, setCount] = useState(0);
   const [offset, setOffset] = useState(0);
   const [value, setValue] = useState(2)
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleOpen2 = () => setOpenDel(true);
+  const handleOpen2 = (id) => {
+    setOpenDel(true); 
+    setPostId(id);  
+    const _post = posts.filter(e => e._id == id);
+    setHelpers(_post[0].helpers); };
   const handleClose2 = () => setOpenDel(false);
-  const handleOpen3 = () => setOpenDel2(true);
+  const handleOpen3 = () => 
+  {
+    setOpenDel2(true);
+  };
   const handleClose3 = () => setOpenDel2(false);
-  const handleOpen4 = () => setOpenEdit(true);
-  const handleClose4 = () => setOpenEdit(false);
 
   useEffect(() => {
     const _fetch = async () => {
@@ -50,6 +61,20 @@ const PublicacionesPropias = ({ }) => {
     };
     _fetch();
   }, [offset]);
+
+  const deletePost = async () => {
+    try {
+        const _post = await changeStatus("hidden", postId);
+        const _posts = posts.filter((el) => {
+          return el._id != _post._id;
+        });
+        setPosts(_posts);
+        setPostList(_posts);
+        swal("Post eliminado", "", "success")
+    } catch (error) {
+      swal("Error", `${error}`, "error")
+    }
+  }
 
   const isInFilter = (post) => {
     if ((animalFilter.length != 0 && animalFilter.includes(post.animal)) ||
@@ -76,6 +101,35 @@ const PublicacionesPropias = ({ }) => {
       setOpen(false);
     }
   };
+
+  const reviewUser = async () => {
+    try {
+        await reviewUsers(reviews, postId);
+        swal("Acción exitosa", "", "success");
+        setPosts(posts.filter(e => e._id != postId))
+        setPostList(posts.filter(e => e._id != postId))
+    } catch (error) {
+      swal("Error", "Error resolviendo el anuncio", "error");
+    }
+  }
+
+  const addResenia = (_id, _desc) => {
+    const name = helpers.filter(e => e._id == _id)
+    const reviewIndex = reviews.some(e => e._id == _id)
+    if (!reviewIndex) {
+    const _resenias =[ ...reviews, {
+      _id: _id,
+      name: name[0].name,
+      rating: value,
+      desc: _desc
+    }];
+    console.log(_resenias);
+
+    setReviews(_resenias)
+      
+    }
+    
+  }
 
   const animales = ["Perro", "Gato"];
   const sexo = ["Hembra", "Macho"];
@@ -169,13 +223,14 @@ const PublicacionesPropias = ({ }) => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-12">
             {posts.map((e) => {
-              return <PostCard key={e._id} post={e} profile={true} onEdit={handleOpen4} onDelete={handleOpen2}></PostCard>;
+              return <PostCard key={e._id} post={e} profile={true} onDelete={handleOpen2}></PostCard>;
             })}
           </div>
           <div className="w-full flex justify-center">
             <Pagination count={count} shape="rounded" onChange={onChangePage}></Pagination>
           </div>
 
+            {/* Modal filtros */}
           <Modal
             open={open}
             onClose={handleClose}
@@ -343,6 +398,7 @@ const PublicacionesPropias = ({ }) => {
               </div>
             </div>
           </Modal>
+          {/* Modal Eliminar */}
           <Modal
             open={openDel}
             onClose={handleClose2}
@@ -354,11 +410,12 @@ const PublicacionesPropias = ({ }) => {
               <hr className="w-full mt-3"></hr>
               <div className="w-full flex justify-end gap-4">
                 <button className="bg-white  px-3 rounded-2xl text-text border border-text hover:bg-stone-100">Regresar</button>
-                <button onClick={handleClose2} className="bg-[#3BC430] px-3 rounded-2xl text-white border border-text hover:bg-[#36b02e]">Resuelto</button>
-                <button onClick={() => { handleClose2(); handleOpen3(); }} className="bg-[#D22F2F] px-3 rounded-2xl text-white border border-text hover:bg-[#bb2929]">Eliminar</button>
+                <button onClick={() => { handleClose2(); handleOpen3(); }} className="bg-[#3BC430] px-3 rounded-2xl text-white border border-text hover:bg-[#36b02e]">Resuelto</button>
+                <button onClick={() => {handleClose2(); deletePost();}} className="bg-[#D22F2F] px-3 rounded-2xl text-white border border-text hover:bg-[#bb2929]">Eliminar</button>
               </div>
             </div>
           </Modal>
+          {/* Modal reseñas */}
           <Modal
             open={openDel2}
             onClose={handleClose3}
@@ -371,12 +428,20 @@ const PublicacionesPropias = ({ }) => {
                 <div className="grid grid-cols-2 w-full gap-3">
                   <div className="w-full">
                     <label htmlFor="name">Nombre:</label>
-                    <select
+                    <Select
                       id="name"
+                      value={user}
                       name="name"
+                      onChange={e => {setUser(e.target.value);}}
                       type="text"
-                      className="xs-4 bg-[#e6e6e6] rounded-xl p-2 text-text focus:outline-none focus:border-[#b5b5b5] w-full border"
-                    ></select>
+                      className="xs-4 bg-[#e6e6e6] rounded-xl text-text focus:outline-none focus:border-[#b5b5b5] w-full border"
+                    >
+                      {
+                        helpers.map(e => {
+                          return <MenuItem value={e._id} key={e._id}>{e.name}</MenuItem>
+                        })
+                      }
+                    </Select>
                   </div>
                   <div className="flex flex-col">
                     <label htmlFor="rating">Calificación:</label>
@@ -395,29 +460,24 @@ const PublicacionesPropias = ({ }) => {
                   <textarea
                     id="description"
                     name="description"
-
+                    value={desc}
+                    onChange={e => {setDesc(e.target.value)}}
                     type="text"
                     maxLength={75}
                     className="resize-none xs-4 bg-[#e6e6e6] rounded-xl p-2 text-text focus:outline-none focus:border-[#b5b5b5] w-full border"
                   ></textarea>
-                  <div className="flex flex-row-reverse"><button className="w-8 h-8 bg-green-600 flex justify-center items-center text-white"><AiOutlineCheck /></button></div>
+                  <div className="flex flex-row-reverse"><button onClick={() => addResenia(user, desc)} className="w-8 h-8 bg-green-600 flex justify-center items-center text-white"><AiOutlineCheck /></button></div>
                 </div>
                 <div>
-                  {/* Aqui van los comentarios que vaya escribiendo */}
+                  {reviews.map((e) => {return <Resenia key={e} resenia={e}></Resenia>})}
                 </div>
               </div>
               <div className="w-full flex justify-end gap-4">
-                <button className="bg-white  px-3 rounded-2xl text-text border border-text hover:bg-stone-100">Regresar</button>
-                <button onClick={handleClose3} className="bg-[#3BC430] px-3 rounded-2xl text-white border border-text hover:bg-[#36b02e]">Resuelto</button>
+                <button onClick={handleClose3} className="bg-white  px-3 rounded-2xl text-text border border-text hover:bg-stone-100">Regresar</button>
+                <button onClick={() => {handleClose3(); reviewUser();}} className="bg-[#3BC430] px-3 rounded-2xl text-white border border-text hover:bg-[#36b02e]">Resuelto</button>
                 <button onClick={() => { handleClose3(); }} className="bg-[#D22F2F] px-3 rounded-2xl text-white border border-text hover:bg-[#bb2929]">Eliminar</button>
               </div>
             </div>
-          </Modal><Modal
-            open={openEdit}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description">
-            <></>
           </Modal>
         </>
       )}

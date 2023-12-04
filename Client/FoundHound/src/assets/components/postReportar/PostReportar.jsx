@@ -1,19 +1,28 @@
 import { AiOutlineCheck } from "react-icons/ai";
 import Mapa from "../mapa/Mapa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "@mui/material/Select";
 import razas from "../../resources/razas.json";
 import MenuItem from "@mui/material/MenuItem";
 import ListSubheader from "@mui/material/ListSubheader";
-import { createPost } from "../../../services/foundhound.service";
+import { createPost, editPost, getPostById } from "../../../services/foundhound.service";
+import { useParams } from "react-router-dom";
+import moment from "moment";
 
-const PostReportar = ({ perdido }) => {
+
+const PostReportar = ({ perdido = true, edit = false }) => {
 
 
     const [breed, setBreed] = useState([]);
     const [animal, setAnimal] = useState("");
     const [color, setColor] = useState([]);
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [date, setDate] = useState("");
     const [sex, setSex] = useState("");
+    const { id, category } = useParams();
+    perdido = category == "lost" ? true : false;
+    const [post, setPost] = useState();
 
     const initialFormData = {
         name: '',
@@ -25,8 +34,30 @@ const PostReportar = ({ perdido }) => {
         image: ''
     }
 
+    useEffect(
+        () => {
+            if (edit) {
+                const _fetch = async () =>{
+                    const _post = await getPostById(id);
+                    setPost(_post.post);
+                    setBreed(_post.post.breed);
+                    setAnimal(_post.post.animal);
+                    setColor(_post.post.color);
+                    setSex(_post.post.sex);
+                    setDate(moment(_post.post.date).format("YYYY-MM-D"));
+                    setName(_post.post.name);
+                    setDescription(_post.post.description);
+                    setImage(_post.post.image);
+                    setImageF(_post.post.image);
+                }
+
+                _fetch();
+            }
+        },[edit]
+    )
+
     const [formData, setFormData] = useState(initialFormData);
-    const [image, setImage] = useState("./src/assets/img/default.jpeg");
+    const [image, setImage] = useState("../../../src/assets/img/default.jpeg");
     const [imageF, setImageF] = useState();
 
     const razaLista = razas;
@@ -37,16 +68,21 @@ const PostReportar = ({ perdido }) => {
           try {
             let _formData = new FormData();
             console.log(formData);
-            _formData.append("name", formData.name)
-            _formData.append("breed", formData.breed)
-            _formData.append("animal", formData.animal)
-            _formData.append("color", formData.color)
-            _formData.append("sex", formData.sex)
-            _formData.append("date", formData.date)
-            _formData.append("description", formData.description)
+            _formData.append("name", name)
+            _formData.append("breed", breed)
+            _formData.append("animal", animal)
+            _formData.append("color", color)
+            _formData.append("sex", sex)
+            _formData.append("date", date)
+            _formData.append("description", description)
             _formData.append("image", imageF)
+            if (edit) {
+                const profile = await editPost(_formData, id);
+            swal("Publicación actualizada", "", "success")
+            }else{
             const profile = await createPost(_formData, perdido ? "lost" : "found");
             swal("Publicación creada", "", "success")
+            }
           } catch (error) {
             swal("Error", error.toString(), "error");
           }
@@ -122,8 +158,9 @@ const PostReportar = ({ perdido }) => {
                                     name="name"
                                     placeholder="Nombre de la mascota"
                                     type="text"
-                                    onChange={changeHandler}
                                     maxLength={75}
+                                    onChange={e => {changeHandler(e); setName(e.target.value)}}
+                                    value={name}
                                     className="xs-4 bg-[#e6e6e6] rounded-xl p-2 text-text focus:outline-none focus:border-[#b5b5b5] w-full border"
                                 ></input>
                             </div>
@@ -138,7 +175,8 @@ const PostReportar = ({ perdido }) => {
                                     id="date"
                                     name="date"
                                     type="date"
-                                    onChange={changeHandler}
+                                    onChange={e => {changeHandler(e); setDate(e.target.value)}}
+                                    value={date}
                                     className="xs-4 bg-[#e6e6e6] rounded-xl p-2 text-text focus:outline-none focus:border-[#b5b5b5] w-full border"
                                 ></input>
                             </div>
@@ -252,7 +290,8 @@ const PostReportar = ({ perdido }) => {
                                 name="description"
                                 placeholder="	Escribe detalles adicionales sobre la mascota y/o una desaparicion de los acontecimientos"
                                 type="text"
-                                onChange={changeHandler}
+                                value={description}
+                                onChange={e => {changeHandler(e); setDescription(e.target.value)}}
                                 maxLength={75}
                                 className="xs-4 bg-[#e6e6e6] rounded-xl p-2 text-text focus:outline-none focus:border-[#b5b5b5] w-full border"
                             ></textarea>
