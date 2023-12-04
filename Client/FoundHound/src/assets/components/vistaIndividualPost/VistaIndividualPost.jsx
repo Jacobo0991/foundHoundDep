@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Modal from '@mui/material/Modal';
 import { getPostById, isTokenExpired, proporcionarInfo, reportarPost } from "../../../services/foundhound.service";
 import moment from "moment"
+import redflag from "../../src/assets/img/redflag.jpeg";
 import { useParams } from "react-router-dom";
 import swal from "sweetalert";
 
@@ -96,7 +97,7 @@ const VistaIndividualPost = ({  }) => {
             {post && <div className=" md:min-h-screen md:flex grid grid-cols-1  md:flex-row  mx-6 mt-20">
                 <div className="flex flex-col sm:flex-row justify-center items-center text-xl md:invisible visible">
                         <h1 className="text-3xl  w-full font-bold text-titles text-center lg:text-4xl xl:text-5xl ">{!post.name && `${post.animal} encontrado`}{post.name && `${post.name} perdido`}</h1>
-                        <button onClick={() => handleOpenR()}> <img className="h-8 w-8" src={"../../src/assets/img/redflag.jpeg"}></img> </button>
+                        <button onClick={() => handleOpenR()}> <img className="h-8 w-8" src={redflag}></img> </button>
                     </div>
                 <div className="flex flex-col">
                     <figure className="md:pr-6 flex justify-center">
@@ -114,7 +115,7 @@ const VistaIndividualPost = ({  }) => {
                 <div className="flex flex-col items-start md:items-start">
                     <div className="flex flex-row pt-6 text-xl invisible md:visible">
                         <h1 className="text-3xl font-bold text-titles text-left lg:text-4xl xl:text-5xl pr-10">{!post.name && `${post.animal} encontrado`}{post.name && `${post.name} perdido`}</h1>
-                        <button onClick={() => handleOpenR()}> <img className="h-8 w-8" src={"../../src/assets/img/redflag.jpeg"}></img> </button>
+                        <button onClick={() => handleOpenR()}> <img className="h-8 w-8" src={redflag}></img> </button>
                     </div>
                     <div className="flex flex-row pt-6 text-xl">
                         <h3 className="font-bold">Encontrado: </h3>

@@ -3,6 +3,7 @@ import { FaPen } from "react-icons/fa6";
 import { grey } from '@mui/material/colors';
 import { useState } from 'react';
 import swal from 'sweetalert';
+import defaultimg from "../../img/usuario-de-perfil.png"
 import { registerProfile } from '../../../services/foundhound.service';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,7 +18,7 @@ const CreacionPerfil = ({
       }
       const navigate = useNavigate();
       const [formData, setFormData] = useState(initialFormData);
-      const [image, setImage] = useState("./src/assets/img/usuario-de-perfil.png");
+      const [image, setImage] = useState(defaultimg);
       const [imageF, setImageF] = useState();   
     
       const handleSubmit = async (e) => {

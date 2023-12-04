@@ -1,5 +1,6 @@
 import { AiOutlineCheck } from "react-icons/ai";
 import Mapa from "../mapa/Mapa";
+import defaultimg from "../../img/default.jpeg"
 import { useEffect, useState } from "react";
 import Select from "@mui/material/Select";
 import razas from "../../resources/razas.json";
@@ -57,7 +58,7 @@ const PostReportar = ({ perdido = true, edit = false }) => {
     )
 
     const [formData, setFormData] = useState(initialFormData);
-    const [image, setImage] = useState("../../../src/assets/img/default.jpeg");
+    const [image, setImage] = useState(defaultimg);
     const [imageF, setImageF] = useState();
 
     const razaLista = razas;
@@ -310,7 +311,7 @@ const PostReportar = ({ perdido = true, edit = false }) => {
                             <label htmlFor="avatar">Selecciona una imagen:</label>
 
                             <input type="file" id="avatar" onChange={(e) => { setImageF(e.target.files[0]); onImageChange(e) }} name="image" className="hidden" accept="image/png, image/jpeg" />
-                            <img className="w-50 h-50" src={image ? image : "src/assets/img/default.jpeg"} onClick={e => { document.getElementById('avatar').click(); }} alt="" />
+                            <img className="w-50 h-50" src={image ? image : defaultimg} onClick={e => { document.getElementById('avatar').click(); }} alt="" />
                         </div>
                     </div>
                 </form>
