@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Modal from '@mui/material/Modal';
 import { getPostById, isTokenExpired, proporcionarInfo, reportarPost } from "../../../services/foundhound.service";
 import moment from "moment"
-import redflag from "../../src/assets/img/redflag.jpeg";
+import redflag from "../../img/redflag.jpeg";
 import { useParams } from "react-router-dom";
 import swal from "sweetalert";
 
